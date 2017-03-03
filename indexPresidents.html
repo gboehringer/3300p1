@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>ggb39, jk2235, ap639</title>
+	<script src="https://d3js.org/d3.v4.min.js"></script>
+	<script src="http://d3js.org/topojson.v2.min.js"></script>
+	<style>
+	svg {border: solid black 1px}
+	path.lineGraph {fill: none; stroke-width: 3; }
+	</style>
+</head>
+<body>
+	<h1> Excursion's in How Parents Name their Children</h1>
+
+	<svg height = 700 width = "1000"> </svg>
+
+	<script id="chart_1">
+		
+		var svg = d3.select("svg");
+		svg.append("text")
+		.attr("id", "SectorName")
+		.attr("x", 10)
+		.attr("y", 28)
+		.style("font-size", "15pt");
+
+		//var termsA= ["Election", "1st Term", "2nd Term", "3rd Term", "4th Term", "5th Term (re-elected)", "6th Term", "7th Term", "8th Term", "Post Presidency"];
+
+		var termsAxis = d3.scaleLinear().domain([0, 10]).range([0, 700]);
+		var prezTermsAxis= d3.axisBottom(termsAxis);
+		var popAxis = d3.scaleLinear().domain([0,70000]).range([500, 0]);
+		var popularityAxis = d3.axisLeft(popAxis);
+
+		//termsA.map(function(d) {return d.value;})
+
+//dates are weird and we want to lean on the API as much as possible 
+//domain is in thousands- mapping from the bottom of the screen up to the top (0,0)
+//using an ordinal scale (sectorScale) - schemeCategory20 is a default color scheme with up to 20 colors
+
+		var sectorScale = d3.scaleOrdinal(d3.schemeCategory20);
+
+//using plot as if it were at (0,0) and we'll add padding 
+
+		var plot = svg.append("g").attr("transform", "translate(30,30)");
+		plot.append("g").call(prezTermsAxis).attr("transform", "translate(250,500)");
+		plot.append("g").call(popularityAxis).attr("transform", "translate(250,0)");
+
+		svg.append("text")
+			.attr("x", svg.attr("width")/2)
+			.attr("y", 600)
+			.attr("alignment-baseline", "middle")
+			.attr("text-anchor", "middle")
+			.text("Terms Spent in Office");
+		
+		svg.append("text")
+			.attr("x",100)
+			.attr("y", svg.attr("height")/4)
+			.attr("alignment-baseline", "middle")
+			.attr("text-anchor", "middle")
+			//.attr("transform", "rotate(180)")
+			.text("National Popularity of Name");
+
+	</script>
+</body>
+</html>

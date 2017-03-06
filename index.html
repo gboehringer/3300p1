@@ -3,17 +3,149 @@
 <head>
     <title>INFO 3300 - Data-driven Web Applications</title>
     <link href="https://fonts.googleapis.com/css?family=Alegreya|Alegreya+Sans" rel="stylesheet">
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/default.min.css">
     <script src="https://d3js.org/d3.v4.min.js"></script>
-    <style>
+   <style>
         svg {border: solid black 1px}
     </style>
 </head>
 
 <body>
-    <svg width="1000" height="1000"></svg>
+    <svg width="1565" height="900" id="svg"></svg>
+    <svg width="500" height="500" id="svg2"></svg>
 </body>
 <script id="Male Bible Names">
-    var svg = d3.select("svg")
+
+    var svg = d3.select("svg");
+    var width = svg.attr("width");
+    var height = svg.attr("height");
+
+    var bibNames = ["Jacob", "Michael", "Matthew", "Andrew",
+                    "James", "Joshua", "David", "Christopher", "John"];
+
+    var scaleX = d3.scaleLinear()
+                .domain([1910,2015])
+                .range([65, width-30]);
+
+    var bottom = d3.axisBottom(scaleX).tickFormat(d3.format("d"));
+
+    var scaleY = d3.scaleBand()
+                .domain(bibNames)
+                .range([height-70, 30]);
+
+    var left = d3.axisLeft(scaleY);
+
+    var scaleRad = d3.scaleLog()
+                .domain([1,1.06])
+                .range([25, 50]);
+
+    svg.append("g")
+        .attr("id", "lft")
+        .call(left)
+        .attr("transform", "translate(65, 0)");
+
+    svg.append("g")
+        .attr("id", "btm")
+        .call(bottom)
+        .attr("transform", "translate(0, 830)");
+var dts;
+    function drawOriginalNames(datas) {
+        dts=datas;
+        var names = new Set();
+        datas[1].forEach( function (n) {
+            names.add(n.name)
+        });
+        console.log(names);
+        var counts = [];
+        for (var i=2; i < datas.length; i++) {
+            var count = 0;
+            datas[i].forEach( function (n) {
+                if (!names.has(n.name)) {
+                    count++;
+                    names.add(n.name);
+                }
+            });
+            counts.push(count);
+        }
+        console.log(counts);
+    }
+
+    function processData(error, datas) {
+        var bibColors = {};
+        bibNames.forEach(function (name) {
+            var red = Math.floor((Math.random() * 50) + 65);
+            var green = Math.floor((Math.random() * 50) + 65);
+            var blue = Math.floor((Math.random() * 50) + 65);
+            bibColors[name] = "rgb("+red+","+blue+","+green+")";
+        });
+        var bibData = [];
+        for (var i=0; i<datas.length; i++) {
+            var nameSet = new Set(bibNames);
+            var year = i + 1913;
+            var yearData = { "year": year, "mNames": [], "count": 0 };
+            datas[i].forEach(function(n) {
+                if (n.gender == "M") {
+                    yearData.count = yearData.count + parseInt(n.count);
+                }
+                if (nameSet.has(n.name) && n.gender=="M") {
+                    nameSet.delete(n.name);
+                    yearData.mNames.push(n);
+                }
+            });
+            bibData.push(yearData);
+
+            if (year % 5 == 2 || year == 2015) {
+                var count = yearData.count;
+                var nameCounts = {};
+                yearData.mNames.forEach(function (nd) { nameCounts[nd.name] = parseInt(nd.count) });
+                var start;
+                var startYear;
+                if (year == 2015) {
+                    start = i-2;
+                    startYear = year;
+                }
+                else {
+                    start = i-4;
+                    startYear = year-2;
+                }
+                for (var n = start; n < i; n++) {
+                    count = count + bibData[n].count;
+                    bibData[n].mNames.forEach(function (p) {
+                        nameCounts[p.name] = nameCounts[p.name] + parseInt(p.count);
+                    });
+                }
+                for (var k in nameCounts) {
+                    svg.append("circle")
+                    .attr("cx", scaleX(startYear))
+                    .attr("cy", scaleY(k)+30)
+                    .attr("r", scaleRad((nameCounts[k] / count)+1))
+                    .attr("stroke", "black")
+                    .attr("fill", bibColors[k]);
+
+                    svg.append("text")
+                    .attr("dx", scaleX(startYear))
+                    .attr("dy", scaleY(k)+30)
+                    .style("text-anchor", "middle")
+                    .style("alignment-baseline", "middle")
+                    .style("fill", "rgb(53,178,175)")
+                    .text((100 * (nameCounts[k] / count)).toFixed(2) + "%");
+                }
+            }
+        }
+        drawOriginalNames(datas);
+    };
+
+    var filenames = [];
+    for (var i = 1913; i < 2016; i++) {
+        filenames.push("data/names/yob" + i + ".csv");
+    }
+
+    var queue = d3.queue();
+    filenames.forEach(function(filename) {
+        queue.defer(d3.csv, filename);
+    });
+    queue.awaitAll(processData);
+
+
+
 </script>
 

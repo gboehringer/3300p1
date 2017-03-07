@@ -10,43 +10,49 @@
 </head>
 
 <body>
-    <svg width="1565" height="900" id="svg"></svg>
-    <svg width="500" height="500" id="svg2"></svg>
+    <svg width="1600" height="1000" id="svg"></svg>
+    <svg width="600" height="500" id="svg2"></svg>
 </body>
 <script id="Male Bible Names">
 
-    var svg = d3.select("svg");
+    var svg = d3.select("#svg");
     var width = svg.attr("width");
-    var height = svg.attr("height");
+    var height = svg.attr("height")-100;
+
+    var svg2 = d3.select("#svg2");
+    var width2 = svg2.attr("width");
+    var height2 = svg2.attr("height");
 
     var bibNames = ["Jacob", "Michael", "Matthew", "Andrew",
                     "James", "Joshua", "David", "Christopher", "John"];
 
     var scaleX = d3.scaleLinear()
                 .domain([1910,2015])
-                .range([65, width-30]);
+                .range([100, width-30]);
 
-    var bottom = d3.axisBottom(scaleX).tickFormat(d3.format("d"));
+    var bottom = d3.axisBottom(scaleX)
+                .tickValues(d3.range(1910,2015,5))
+                .tickFormat(d3.format("d"));
 
     var scaleY = d3.scaleBand()
                 .domain(bibNames)
-                .range([height-70, 30]);
+                .range([height-55, 45]);
 
     var left = d3.axisLeft(scaleY);
 
-    var scaleRad = d3.scaleLog()
-                .domain([1,1.06])
-                .range([25, 50]);
+    var scaleRad = d3.scaleSqrt()
+                .domain([0,0.06])
+                .range([0, 58]);
 
     svg.append("g")
         .attr("id", "lft")
         .call(left)
-        .attr("transform", "translate(65, 0)");
+        .attr("transform", "translate(100, 0)");
 
     svg.append("g")
         .attr("id", "btm")
         .call(bottom)
-        .attr("transform", "translate(0, 830)");
+        .attr("transform", "translate(0, 845)");
 var dts;
     function drawOriginalNames(datas) {
         dts=datas;
@@ -54,7 +60,6 @@ var dts;
         datas[1].forEach( function (n) {
             names.add(n.name)
         });
-        console.log(names);
         var counts = [];
         for (var i=2; i < datas.length; i++) {
             var count = 0;
@@ -67,6 +72,106 @@ var dts;
             counts.push(count);
         }
         console.log(counts);
+
+        var scaleX2 = d3.scaleLinear()
+                      .domain([1915,2015])
+                      .range([65, width2-30]);
+
+        var scaleY2 = d3.scaleLinear()
+                      .domain([0,2200])
+                      .range([height2-70, 30]);
+
+        var bottom2 = d3.axisBottom(scaleX2)
+                      .tickValues(d3.range(1915,2015,5))
+                      .tickFormat(d3.format("d"))
+
+        var left2 = d3.axisLeft(scaleY2);
+
+        svg2.append("g")
+        .attr("id", "lft2")
+        .call(left2)
+        .attr("transform", "translate(50, 0)");
+
+        svg2.append("g")
+        .attr("id", "btm2")
+        .call(bottom2)
+        .attr("transform", "translate(0, 430)")
+        .selectAll("text")
+        .style("text-anchor", "end")
+        .attr("dx", "-9.0")
+        .attr("dy", "-4.5")
+        .attr("transform", "rotate(-90)");
+
+        for (var i=0; i < counts.length; i++) {
+            var x = scaleX2(i+1915)-2;
+            var y = scaleY2(counts[i]);
+
+            svg2.append("rect")
+                .attr("x", x)
+                .attr("y", y)
+                .attr("width",5.5)
+                .attr("height",(height2-70)-y)
+                .style("fill", "rgb(0,102,102)");
+        }
+    }
+
+    function drawLegend() {
+        var circleSizes = [0.0001, 0.0002, 0.0005, 0.0010,  0.002,
+                           0.0030, 0.0040,  0.0050];
+        var y = 930;
+
+
+       svg.append("text")
+          .attr("dx", scaleX(1933))
+          .attr("dy", y)
+          .style("text-anchor", "middle")
+          .style("alignment-baseline", "middle")
+          .style("font-size", "18px")
+          .text("Small Circle:");
+
+        svg.append("text")
+          .attr("dx", scaleX(1933))
+          .attr("dy", y+17)
+          .style("text-anchor", "middle")
+          .style("alignment-baseline", "middle")
+          .style("font-size", "18px")
+          .text("Percent Scale:");
+
+        svg.append("rect")
+          .attr("x", scaleX(1929))
+          .attr("y", y-25)
+          .attr("width", scaleX(1991) - scaleX(1928))
+          .attr("height", "65")
+          .style("stroke", "black")
+          .style("fill", "none");
+
+
+        var legend = svg.append("g")
+                        .selectAll("g")
+                        .data(circleSizes)
+                        .enter()
+                            .append("g")
+                            .attr("transform", function(d,i){
+                                var x = (i * 100)+scaleX(1940);
+                                return "translate(" + x + ", " + y + ")";
+                            });
+
+        legend.append("circle")
+        .style("fill", "rgb(102,0,51)")
+        .style("stroke", "black")
+        .attr("r", function (d, i) {
+            return scaleRad(d);
+        });
+
+        legend.append("text")
+        .attr("dx", "0")
+        .attr("dy", "27")
+        .style("text-anchor", "middle")
+        .style("alignment-baseline", "middle")
+        .style("font-size", "14px")
+        .text( function(d, i) {
+            return ((d*100).toFixed(2)+"%");
+        });
     }
 
     function processData(error, datas) {
@@ -116,21 +221,26 @@ var dts;
                 for (var k in nameCounts) {
                     svg.append("circle")
                     .attr("cx", scaleX(startYear))
-                    .attr("cy", scaleY(k)+30)
-                    .attr("r", scaleRad((nameCounts[k] / count)+1))
+                    .attr("cy", scaleY(k)+45)
+                    .attr("r", scaleRad((nameCounts[k] / count)))
                     .attr("stroke", "black")
                     .attr("fill", bibColors[k]);
 
-                    svg.append("text")
-                    .attr("dx", scaleX(startYear))
-                    .attr("dy", scaleY(k)+30)
-                    .style("text-anchor", "middle")
-                    .style("alignment-baseline", "middle")
-                    .style("fill", "rgb(53,178,175)")
-                    .text((100 * (nameCounts[k] / count)).toFixed(2) + "%");
+                    var percent = (100 * (nameCounts[k] / count)).toFixed(2)
+                    if (percent > 0.5) {
+                        svg.append("text")
+                        .attr("dx", scaleX(startYear))
+                        .attr("dy", scaleY(k)+45)
+                        .style("text-anchor", "middle")
+                        .style("alignment-baseline", "middle")
+                        .style("fill", "rgb(53,178,175)")
+                        .style("font-size", "13.5px")
+                        .text(percent + "%");
+                    }
                 }
             }
         }
+        drawLegend();
         drawOriginalNames(datas);
     };
 

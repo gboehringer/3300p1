@@ -4,15 +4,23 @@
     <title>INFO 3300 - Data-driven Web Applications</title>
     <link href="https://fonts.googleapis.com/css?family=Alegreya|Alegreya+Sans" rel="stylesheet">
     <script src="https://d3js.org/d3.v4.min.js"></script>
-   <style>
-        svg {border: solid black 1px}
-    </style>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+
 </head>
 
-<body>
-    <div id="bibleNames"></div>
+<body>    
+    <h1 id="title">U.S. Name Trends</h1>
+    <p id="names">By: jk2235, ap639, and ggb39</p>
     <div id="newNames"></div>
+    <p id= "newN"> Over time there has been a drastic increase of new baby names in the top 1000 for the U.S. Parents are 
+    now looking for unique baby names and looking away from lists and pop-culture icons.</p>
+    <br>
     <div id="popculture"></div>
+    <br>
+    <p id="bib"> It is evident that as time has gone on, people are even turning way from classic literature, such as the Bible, 
+    for inspiration in naming their children.</p>
+    <div id="bibleNames"></div>
+
 </body>
 
 <script id="Male Bible Names">
@@ -95,11 +103,16 @@
 	var namecolors = {"Mariah":"rgb(101,82,134)", "Emma":"rgb(173,173,92)", "Jennifer":"rgb(77,153,153)", "Rachel":"rgb(102,153,0)", "Linda":"rgb(123,18,99)"};
 
     var colors = ["rgb(101,82,114)", "rgb(69,73,95)", "rgb(72,102,88)", "rgb(73,90,108)", "rgb(83,98,99)", "rgb(83,107,89)", "rgb(109,43,61)", "rgb(60,54,80)", "rgb(46,80,46)"]
-	var cities = [{blurb: "Emma Green-Geller (Ross and Rachel's daughter in Friends) is born in 2002", x: 2002.5, y: 0.011, color:"red"},
-					{blurb: "Buddy Clark's song, Linda, is released in 1942 and tops the charts in 1947", x: 1942, y: 0.025},
-					{blurb: "Friends, a tv show about Rachel Green and her friends, comes out in 1994", x: 1994, y: 0.0085},
-					{blurb: "Love Story (an extremely popular movie with beloved character Jennifer) released in 1970", x: 1970, y: 0.0335},
-                    {blurb: "Mariah Carey's first album is released in 199 and becomes very popular", x: 1990.5, y: 0.002}];
+	var cities = [{blurb: "Emma Green-Geller (Ross and Rachel's", x: 2002.5, y: 0.012},
+                    {blurb: "daughter in Friends) is born in 2002", x: 2002.5, y: 0.011},
+					{blurb: "Buddy Clark's hit song, ", x: 1942, y: 0.0255},
+                    {blurb: "Linda, released in 1942", x: 1942, y: 0.0245},
+					{blurb: "Friends, the show with Rachel", x: 1994, y: 0.0095},
+                    {blurb: "Green, comes out in 1994", x: 1994, y: 0.0085},
+					{blurb: "Love Story (an extremely popular movie", x: 1970, y: 0.0345},
+                    {blurb: "with beloved character Jennifer) released in 1970", x: 1970, y: 0.0335},
+                    {blurb: "Mariah Carey's hit album", x: 1990.5, y: 0.003},
+                    {blurb: "is released in 1990", x: 1990.5, y: 0.002}];
 	var textinfo = [[[1990.5, 0.0015], [1990.5, 0.075]], [[1943, 0.0025], [1970, 0.075]], [[1970, 0.035], [1970, 0.075]], [[1942, 0.025], [1942, 0.075]], [[2002, 0.011], [2002, 0.075]]]
 
 	var datesandcounts = {};
@@ -356,11 +369,13 @@
                 	.append("text")
                 	.text(function(d) {  return d.blurb; })
                 	.attr("font-size", "12px")
-                	.attr('x', function(d) {
-                		return xScale(d.x-26);
+                	.attr('x', function(d) { 
+                		return xScale(d.x-10);
                 	})
 		    		.attr('y', function(d) {
-                		return yScale(d.y+.028);
+                        if (d.x != 2002.5) {
+                		  return yScale(d.y+.0285);
+                        } return yScale(d.y+0.03);
                 	});
 
                	psvg.selectAll("paths")
@@ -374,10 +389,12 @@
 						return yScale(d.y);
 					})
 					.attr("x2", function (d) {
-						return xScale(d.x-10);
+						return xScale(d.x);
 					})
 					.attr("y2", function (d) {
-						return yScale(d.y+0.0275);
+						if (d.x != 2002.5) {
+                          return yScale(d.y+.027);
+                        } return yScale(d.y+0.0283);
 					})
 					.style("stroke-width",0.5)
 					.style("stroke", "black")

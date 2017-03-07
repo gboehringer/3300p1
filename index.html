@@ -16,6 +16,7 @@
 
 <div id="popculture"> </div>
 <script id="Male Bible Names">
+    var colors = ["rgb(101,82,114)", "rgb(69,73,95)", "rgb(72,102,88)", "rgb(73,90,108)", "rgb(83,98,99)", "rgb(83,107,89)", "rgb(109,43,61)", "rgb(60,54,80)", "rgb(46,80,46)"]
 
     var svg = d3.select("#svg");
     var width = svg.attr("width");
@@ -219,15 +220,12 @@ var dts;
             return ((d*100).toFixed(2)+"%");
         });
     }
-
+var bibColors;
     function processData(error, datas) {
-        var bibColors = {};
-        bibNames.forEach(function (name) {
-            var red = Math.floor((Math.random() * 50) + 65);
-            var green = Math.floor((Math.random() * 50) + 65);
-            var blue = Math.floor((Math.random() * 50) + 65);
-            bibColors[name] = "rgb("+red+","+blue+","+green+")";
-        });
+        bibColors = {};
+        for (var i=0; i < bibNames.length; i++) {
+            bibColors[bibNames[i]] = colors[i];
+        }
         var bibData = [];
         var total = [];
         var yeartotal=0;

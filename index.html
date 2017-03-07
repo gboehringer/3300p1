@@ -13,6 +13,8 @@
     <svg width="1565" height="900" id="svg"></svg>
     <svg width="500" height="500" id="svg2"></svg>
 </body>
+
+<div id="popculture"> </div>
 <script id="Male Bible Names">
 
     var svg = d3.select("svg");
@@ -47,6 +49,49 @@
         .attr("id", "btm")
         .call(bottom)
         .attr("transform", "translate(0, 830)");
+
+    var pwidth = 1000;
+	var pheight = 800;
+	var padding = 30;
+
+	var xScale = d3.scaleLinear().domain([1913, 2015]).range([padding * 2, pwidth - padding ]);
+	var yScale = d3.scaleLinear().domain([0, 0.1]).range([pheight - (padding *2),padding]);
+
+	var psvg = d3.select("#popculture").append("svg")
+	    .attr("width", pwidth)
+	    .attr("height", pheight);
+
+	var xAxis = d3.axisBottom(xScale).ticks(12).tickFormat(d3.format("d"));
+	var yAxis = d3.axisLeft(yScale).ticks(20);
+
+	psvg.append("g")
+		.attr("transform", "translate(0," + (pheight - padding - padding) + ")")
+		.call(xAxis)
+		.selectAll("text").attr("transform","rotate(90) translate(6,-13)").style("text-anchor","start");
+
+	psvg.append("g")
+	    .call(yAxis)
+	 	.attr("transform", "translate(" + (padding + padding) + ",0)");
+
+
+	var popculturenames = ["Mariah", "Emma", "Jennifer", "Rachel", "Marilyn", "Linda"];
+	//var popculturenames = ["Mariah", "Jennifer"];
+	var namecolors = {"Mariah":"blue", "Emma":"green", "Jennifer":"red", "Rachel":"pink", "Marilyn":"orange", "Linda":"purple"};
+
+	var cities = [{blurb: "Emma Green-Geller (Ross and Rachel's daughter in Friends) is born in 2002", x: 2002, y: 0.011, color:"red"},
+					{blurb: "Jennifer Jones movie", x: 1943, y: 0.0025, color: "blue"},
+					{blurb: "Buddy Clark's song, Linda, is released in 1942 and tops the charts in 1947", x: 1942, y: 0.025, color: "green"},
+					{blurb: "Friends released", x: 1994, y: 0.01, color: "green"},
+					{blurb: "Love story jennifer", x: 1970, y: 0.035, color: "green"}];
+	var textinfo = [[[1990.5, 0.0015], [1990.5, 0.075]], [[1943, 0.0025], [1970, 0.075]], [[1970, 0.035], [1970, 0.075]], [[1942, 0.025], [1942, 0.075]], [[2002, 0.011], [2002, 0.075]]]
+
+	var datesandcounts = {};
+	popculturenames.forEach(function(o) {
+		datesandcounts[o] = [];
+	});
+	var legendRectSize = 30;                             
+	var legendSpacing = 4; 
+
 var dts;
     function drawOriginalNames(datas) {
         dts=datas;
@@ -66,7 +111,7 @@ var dts;
             });
             counts.push(count);
         }
-        console.log(counts);
+
     }
 
     function processData(error, datas) {
@@ -78,19 +123,34 @@ var dts;
             bibColors[name] = "rgb("+red+","+blue+","+green+")";
         });
         var bibData = [];
+        var total = [];
+        var yeartotal=0;
         for (var i=0; i<datas.length; i++) {
             var nameSet = new Set(bibNames);
             var year = i + 1913;
             var yearData = { "year": year, "mNames": [], "count": 0 };
             datas[i].forEach(function(n) {
+            	
                 if (n.gender == "M") {
                     yearData.count = yearData.count + parseInt(n.count);
                 }
                 if (nameSet.has(n.name) && n.gender=="M") {
                     nameSet.delete(n.name);
                     yearData.mNames.push(n);
+                
                 }
+                if (n.gender =="F") {
+                	yeartotal += parseInt(n.count);
+                }
+                if (n.gender =="F" && popculturenames.indexOf(n.name) != -1) {
+                	
+                    datesandcounts[n.name].push(parseInt(n.count));
+
+                }
+            
             });
+            total.push(yeartotal);
+            yeartotal=0;
             bibData.push(yearData);
 
             if (year % 5 == 2 || year == 2015) {
@@ -129,6 +189,99 @@ var dts;
                     .style("fill", "rgb(53,178,175)")
                     .text((100 * (nameCounts[k] / count)).toFixed(2) + "%");
                 }
+                var line = d3.line()
+					.x(function(d,i) { 
+						return xScale(i+1913); 
+					})
+					.y(function(d, i) { 
+						return yScale(d/total[i]); 
+					});	
+				var textline = d3.line()
+					.x(function(d) { 
+						return xScale(d[0]); 
+					})
+					.y(function(d,i) { 
+						return yScale(d[1]); 
+					});
+
+                popculturenames.forEach(function(j) {
+                	psvg.append("path")
+                	.attr("d", line(datesandcounts[j]))
+                	.attr("stroke", namecolors[j])
+                	/*.attr("stroke", function(d, i){
+			        	namecolors[i];
+			    	})*/
+			    	.attr("fill", "none");
+
+                });
+                /*textinfo.forEach(function (k) {
+                	psvg.append("path")
+			    	.attr("d", textline(k))
+			    	.attr("stroke", "black")
+			    	.attr("fill", "black");
+                });*/
+                psvg.selectAll("texts")
+                	.data(cities)
+                	.enter()
+                	.append("text")
+                	.text(function(d) {  return d.blurb; })
+                	.attr("font-size", "10px")
+                	.attr('x', function(d) {
+                		return xScale(d.x-20);
+                	})
+		    		.attr('y', function(d) {
+                		return yScale(d.y+.043);
+                	});
+
+               	psvg.selectAll("paths") 
+               		.data(cities)
+					.enter()
+					.append("line")
+					.attr("x1", function (d) {
+						return xScale(d.x);
+					})
+					.attr("y1", function (d) {
+						return yScale(d.y);
+					})
+					.attr("x2", function (d) {
+						return xScale(d.x-10);
+					})
+					.attr("y2", function (d) {
+						return yScale(d.y+0.0425);
+					})
+					.style("stroke-width",0.5)
+					.style("stroke", "black");
+
+
+				var legend = psvg.selectAll('.legend')                    
+          		  .data(Object.keys(namecolors))                                  
+		          .enter()                                                
+		          .append('g')                                            
+		          .attr('class', 'legend')                               
+		          .attr('transform', function(d, i) {                     
+		            var wheight = legendRectSize + legendSpacing;          
+		            var offset =  wheight * Object.keys(namecolors).length / 2;     
+		            var horz = 2 * legendRectSize;                      
+		            var vert = i * wheight - offset;                      
+		            return 'translate(' + horz + ',' + vert + ')';       
+		          });                                                    
+
+			    legend.append('rect')                                    
+			          .attr('width', legendRectSize)                         
+			          .attr('height', legendRectSize)                         
+			          .style('fill', function (d) {
+			          	return namecolors[d];
+			          })                                  
+			          .style('stroke', function (d) {
+			          	return namecolors[d];
+			          });                                   
+
+			    legend.append('text')                                  
+			          .attr('x', legendRectSize + legendSpacing)             
+			          .attr('y', legendRectSize - legendSpacing)              
+			          .text(function (d) {
+			          	return d;
+			          });
             }
         }
         drawOriginalNames(datas);
@@ -144,8 +297,7 @@ var dts;
         queue.defer(d3.csv, filename);
     });
     queue.awaitAll(processData);
-
+    console.log(datesandcounts);
 
 
 </script>
-

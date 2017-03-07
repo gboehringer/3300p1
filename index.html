@@ -109,9 +109,8 @@
 	var legendRectSize = 18;
 	var legendSpacing = 4;
 
-var dts;
+
     function drawOriginalNames(datas) {
-        dts=datas;
         var names = new Set();
         datas[1].forEach( function (n) {
             names.add(n.name)
@@ -127,7 +126,6 @@ var dts;
             });
             counts.push(count);
         }
-        console.log(counts);
 
         var scaleX2 = d3.scaleLinear()
                       .domain([1915,2015])
@@ -229,15 +227,16 @@ var dts;
             return ((d*100).toFixed(2)+"%");
         });
     }
-var bibColors;
+
     function processData(error, datas) {
-        bibColors = {};
+        var bibColors = {};
         for (var i=0; i < bibNames.length; i++) {
             bibColors[bibNames[i]] = colors[i];
         }
         var bibData = [];
         var total = [];
         var yeartotal=0;
+
         for (var i=0; i<datas.length; i++) {
             var nameSet = new Set(bibNames);
             var year = i + 1913;
@@ -430,7 +429,4 @@ var bibColors;
         queue.defer(d3.csv, filename);
     });
     queue.awaitAll(processData);
-    console.log(datesandcounts);
-
-
 </script>

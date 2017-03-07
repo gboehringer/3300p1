@@ -16,7 +16,7 @@
 
 <div id="popculture"> </div>
 <script id="Male Bible Names">
-
+    var colors = []
     var svg = d3.select("#svg");
     var width = svg.attr("width");
     var height = svg.attr("height")-100;
@@ -59,10 +59,10 @@
 
     var pwidth = 1000;
 	var pheight = 800;
-	var padding = 30;
+	var padding = 40;
 
 	var xScale = d3.scaleLinear().domain([1913, 2015]).range([padding * 2, pwidth - padding ]);
-	var yScale = d3.scaleLinear().domain([0, 0.1]).range([pheight - (padding *2),padding]);
+	var yScale = d3.scaleLinear().domain([0, 0.07]).range([pheight - (padding *2),padding]);
 
 	var psvg = d3.select("#popculture").append("svg")
 	    .attr("width", pwidth)
@@ -81,22 +81,22 @@
 	 	.attr("transform", "translate(" + (padding + padding) + ",0)");
 
 
-	var popculturenames = ["Mariah", "Emma", "Jennifer", "Rachel", "Marilyn", "Linda"];
+	var popculturenames = ["Mariah", "Emma", "Jennifer", "Rachel", "Linda"];
 	//var popculturenames = ["Mariah", "Jennifer"];
-	var namecolors = {"Mariah":"blue", "Emma":"green", "Jennifer":"red", "Rachel":"pink", "Marilyn":"orange", "Linda":"purple"};
+	var namecolors = {"Mariah":"blue", "Emma":"green", "Jennifer":"red", "Rachel":"pink", "Linda":"orange"};
 
-	var cities = [{blurb: "Emma Green-Geller (Ross and Rachel's daughter in Friends) is born in 2002", x: 2002, y: 0.011, color:"red"},
-					{blurb: "Jennifer Jones movie", x: 1943, y: 0.0025, color: "blue"},
+	var cities = [{blurb: "Emma Green-Geller (Ross and Rachel's daughter in Friends) is born in 2002", x: 2002.5, y: 0.011, color:"red"},
 					{blurb: "Buddy Clark's song, Linda, is released in 1942 and tops the charts in 1947", x: 1942, y: 0.025, color: "green"},
-					{blurb: "Friends released", x: 1994, y: 0.01, color: "green"},
-					{blurb: "Love story jennifer", x: 1970, y: 0.035, color: "green"}];
+					{blurb: "Friends, a tv show about Rachel Green and her friends, comes out in 1994", x: 1994, y: 0.0085, color: "green"},
+					{blurb: "Love Story (an extremely popular movie with beloved character Jennifer) released in 1970", x: 1970, y: 0.0335, color: "green"},
+                    {blurb: "Mariah Carey's first album is released in 199 and becomes very popular", x: 1990.5, y: 0.002, color: "green"}];
 	var textinfo = [[[1990.5, 0.0015], [1990.5, 0.075]], [[1943, 0.0025], [1970, 0.075]], [[1970, 0.035], [1970, 0.075]], [[1942, 0.025], [1942, 0.075]], [[2002, 0.011], [2002, 0.075]]]
 
 	var datesandcounts = {};
 	popculturenames.forEach(function(o) {
 		datesandcounts[o] = [];
 	});
-	var legendRectSize = 30;
+	var legendRectSize = 18;
 	var legendSpacing = 4;
 
 var dts;
@@ -318,29 +318,43 @@ var dts;
                 	psvg.append("path")
                 	.attr("d", line(datesandcounts[j]))
                 	.attr("stroke", namecolors[j])
+                    .attr("stroke-width", 2)
                 	/*.attr("stroke", function(d, i){
 			        	namecolors[i];
 			    	})*/
 			    	.attr("fill", "none");
 
                 });
-                /*textinfo.forEach(function (k) {
-                	psvg.append("path")
-			    	.attr("d", textline(k))
-			    	.attr("stroke", "black")
-			    	.attr("fill", "black");
-                });*/
+                psvg.append('text')
+                    .text('Impact of Pop-Culture on Baby Girl Names')
+                    .style("text-anchor","middle")
+                    .attr('x', 500)
+                    .attr('y', 20);
+
+                psvg.append('text')
+                    .text('Year')
+                    .style("text-anchor","middle")
+                    .attr('x', 500)
+                    .attr('y', 775);
+
+                psvg.append('text')
+                    .attr("transform","rotate(-90)")
+                    .attr('x', -350)
+                    .attr('y', 25)
+                    .style("text-anchor","middle")
+                    .text('Percentage of girls named over total births in the year');
+
                 psvg.selectAll("texts")
                 	.data(cities)
                 	.enter()
                 	.append("text")
                 	.text(function(d) {  return d.blurb; })
-                	.attr("font-size", "10px")
+                	.attr("font-size", "12px")
                 	.attr('x', function(d) {
-                		return xScale(d.x-20);
+                		return xScale(d.x-26);
                 	})
 		    		.attr('y', function(d) {
-                		return yScale(d.y+.043);
+                		return yScale(d.y+.028);
                 	});
 
                	psvg.selectAll("paths")
@@ -357,10 +371,11 @@ var dts;
 						return xScale(d.x-10);
 					})
 					.attr("y2", function (d) {
-						return yScale(d.y+0.0425);
+						return yScale(d.y+0.0275);
 					})
 					.style("stroke-width",0.5)
-					.style("stroke", "black");
+					.style("stroke", "black")
+                    .style("opacity", 0.8);
 
 
 				var legend = psvg.selectAll('.legend')
@@ -371,8 +386,8 @@ var dts;
 		          .attr('transform', function(d, i) {
 		            var wheight = legendRectSize + legendSpacing;
 		            var offset =  wheight * Object.keys(namecolors).length / 2;
-		            var horz = 2 * legendRectSize;
-		            var vert = i * wheight - offset;
+		            var horz = 50 * legendRectSize;
+		            var vert = 100+(i *wheight - offset);
 		            return 'translate(' + horz + ',' + vert + ')';
 		          });
 

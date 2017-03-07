@@ -10,21 +10,29 @@
 </head>
 
 <body>
-    <svg width="1600" height="1000" id="svg"></svg>
-    <svg width="600" height="500" id="svg2"></svg>
+    <div id="bibleNames"></div>
+    <div id="newNames"></div>
+    <div id="popculture"></div>
 </body>
 
-<div id="popculture"> </div>
 <script id="Male Bible Names">
     var colors = ["rgb(101,82,114)", "rgb(69,73,95)", "rgb(72,102,88)", "rgb(73,90,108)", "rgb(83,98,99)", "rgb(83,107,89)", "rgb(109,43,61)", "rgb(60,54,80)", "rgb(46,80,46)"]
 
-    var svg = d3.select("#svg");
-    var width = svg.attr("width");
-    var height = svg.attr("height")-100;
+    var width = 1600;
+    var height = 900;
 
-    var svg2 = d3.select("#svg2");
-    var width2 = svg2.attr("width");
-    var height2 = svg2.attr("height");
+    var svg = d3.select("#bibleNames")
+                .append("svg")
+                .attr("width", width)
+                .attr("height", height+100);
+
+    var width2 = 600;
+    var height2 = 500;
+
+    var svg2 = d3.select("#newNames")
+                 .append("svg")
+                 .attr("width", width2)
+                 .attr("height", height2);
 
     var bibNames = ["Jacob", "Michael", "Matthew", "Andrew",
                     "James", "Joshua", "David", "Christopher", "John"];

@@ -1,0 +1,35 @@
+body {
+  margin: 0;
+  padding: 0;
+  background: #e4dce5;
+}
+h1 {
+  text-align: center;
+  color: #3a2c59;
+  font-size: 3em;
+}
+#names{
+	text-align: center;
+	font-size: 2em;
+	color: #3d2356;
+}
+#newN{
+	text-align: center;
+	font-size: 1em;
+	color: #3d2356;
+}
+#newNames{
+	text-align: center;
+}
+#popculture{
+	text-align: center;
+}
+#bib{
+	text-align: center;
+	font-size: 1em;
+	color: #3d2356;
+}
+#bibleNames{
+	display: block;
+	margin: auto;
+}

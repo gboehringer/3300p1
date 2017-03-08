@@ -4,28 +4,37 @@
     <title>INFO 3300 - Data-driven Web Applications</title>
     <link href="https://fonts.googleapis.com/css?family=Alegreya|Alegreya+Sans" rel="stylesheet">
     <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="http://d3js.org/topojson.v2.min.js"></script>
     <link rel="stylesheet" type="text/css" href="styles.css">
-
 </head>
 
-<body>    
+<body>
     <h1 id="title">U.S. Name Trends</h1>
     <p id="names">By: jk2235, ap639, and ggb39</p>
     <div id="newNames"></div>
-    <p id= "newN"> Over time there has been a drastic increase of new baby names in the top 1000 for the U.S. Parents are 
+    <p id= "newN"> Over time there has been a drastic increase of new baby names in the top 1000 for the U.S. Parents are
     now looking for unique baby names and looking away from lists and pop-culture icons.</p>
+    <br>
+    <div id="map0"></div>
+    <div id="map2"></div>
+    <div id="map1"></div>
+    <div id="map3"></div>
+    <br>
     <br>
     <div id="popculture"></div>
     <br>
-    <p id="bib"> It is evident that as time has gone on, people are even turning way from classic literature, such as the Bible, 
+    <br>
+    <p id="bib"> It is evident that as time has gone on, people are even turning way from classic literature, such as the Bible,
     for inspiration in naming their children.</p>
     <div id="bibleNames"></div>
-
 </body>
 
 <script id="Male Bible Names">
-    var colors = ["rgb(101,82,114)", "rgb(69,73,95)", "rgb(72,102,88)", "rgb(73,90,108)", "rgb(83,98,99)", "rgb(83,107,89)", "rgb(109,43,61)", "rgb(60,54,80)", "rgb(46,80,46)"]
+    //Defining Colors used in bubble and map charts
+    var colors = ["rgb(101,82,114)", "rgb(72,102,88)", "rgb(73,90,108)", "rgb(83,98,99)",
+    "rgb(83,107,89)", "rgb(109,43,61)", "rgb(60,54,80)", "rgb(69,73,95)", "rgb(46,80,46)"]
 
+    //Defining & creating svg elements and axes for the bubble chart
     var width = 1600;
     var height = 900;
 
@@ -34,28 +43,20 @@
                 .attr("width", width)
                 .attr("height", height+100);
 
-    var width2 = 600;
-    var height2 = 500;
-
-    var svg2 = d3.select("#newNames")
-                 .append("svg")
-                 .attr("width", width2)
-                 .attr("height", height2);
-
     var bibNames = ["Jacob", "Michael", "Matthew", "Andrew",
                     "James", "Joshua", "David", "Christopher", "John"];
 
     var scaleX = d3.scaleLinear()
-                .domain([1910,2015])
-                .range([100, width-30]);
+                 .domain([1910,2015])
+                 .range([100, width-30]);
 
     var bottom = d3.axisBottom(scaleX)
-                .tickValues(d3.range(1910,2015,5))
-                .tickFormat(d3.format("d"));
+                 .tickValues(d3.range(1910,2015,5))
+                 .tickFormat(d3.format("d"));
 
     var scaleY = d3.scaleBand()
-                .domain(bibNames)
-                .range([height-55, 45]);
+                 .domain(bibNames)
+                 .range([height-55, 45]);
 
     var left = d3.axisLeft(scaleY);
 
@@ -73,7 +74,7 @@
         .call(bottom)
         .attr("transform", "translate(0, 845)");
 
-
+    //Defining & creating svg elements and axes for the line graph
     var pwidth = 1000;
 	var pheight = 800;
 	var padding = 40;
@@ -89,20 +90,19 @@
 	var yAxis = d3.axisLeft(yScale).ticks(20);
 
 	psvg.append("g")
-		.attr("transform", "translate(0," + (pheight - padding - padding) + ")")
-		.call(xAxis)
-		.selectAll("text").attr("transform","rotate(90) translate(6,-13)").style("text-anchor","start");
+	.attr("transform", "translate(0," + (pheight - padding - padding) + ")")
+	.call(xAxis)
+	.selectAll("text").attr("transform","rotate(90) translate(6,-13)").style("text-anchor","start");
 
 	psvg.append("g")
-	    .call(yAxis)
-	 	.attr("transform", "translate(" + (padding + padding) + ",0)");
+	   .call(yAxis)
+	 .attr("transform", "translate(" + (padding + padding) + ",0)");
 
-
+    //Pop culture graph constants
 	var popculturenames = ["Mariah", "Emma", "Jennifer", "Rachel", "Linda"];
-	//var popculturenames = ["Mariah", "Jennifer"];
-	var namecolors = {"Mariah":"rgb(101,82,134)", "Emma":"rgb(173,173,92)", "Jennifer":"rgb(77,153,153)", "Rachel":"rgb(102,153,0)", "Linda":"rgb(123,18,99)"};
+	var namecolors = {"Mariah":"rgb(101,82,134)", "Emma":"rgb(173,173,92)",
+    "Jennifer":"rgb(77,153,153)", "Rachel":"rgb(102,153,0)", "Linda":"rgb(123,18,99)"};
 
-    var colors = ["rgb(101,82,114)", "rgb(69,73,95)", "rgb(72,102,88)", "rgb(73,90,108)", "rgb(83,98,99)", "rgb(83,107,89)", "rgb(109,43,61)", "rgb(60,54,80)", "rgb(46,80,46)"]
 	var cities = [{blurb: "Emma Green-Geller (Ross and Rachel's", x: 2002.5, y: 0.012},
                     {blurb: "daughter in Friends) is born in 2002", x: 2002.5, y: 0.011},
 					{blurb: "Buddy Clark's hit song, ", x: 1942, y: 0.0255},
@@ -113,7 +113,8 @@
                     {blurb: "with beloved character Jennifer) released in 1970", x: 1970, y: 0.0335},
                     {blurb: "Mariah Carey's hit album", x: 1990.5, y: 0.003},
                     {blurb: "is released in 1990", x: 1990.5, y: 0.002}];
-	var textinfo = [[[1990.5, 0.0015], [1990.5, 0.075]], [[1943, 0.0025], [1970, 0.075]], [[1970, 0.035], [1970, 0.075]], [[1942, 0.025], [1942, 0.075]], [[2002, 0.011], [2002, 0.075]]]
+	var textinfo = [[[1990.5, 0.0015], [1990.5, 0.075]], [[1943, 0.0025],
+    [1970, 0.075]], [[1970, 0.035], [1970, 0.075]], [[1942, 0.025], [1942, 0.075]], [[2002, 0.011], [2002, 0.075]]]
 
 	var datesandcounts = {};
 	popculturenames.forEach(function(o) {
@@ -122,8 +123,9 @@
 	var legendRectSize = 18;
 	var legendSpacing = 4;
 
-
+    //Draws the new-name chart
     function drawOriginalNames(datas) {
+
         var names = new Set();
         datas[1].forEach( function (n) {
             names.add(n.name)
@@ -140,9 +142,18 @@
             counts.push(count);
         }
 
+        //Defining the svg elements for the new name chart
+        var width2 = 625;
+        var height2 = 500;
+
+        var svg2 = d3.select("#newNames")
+                   .append("svg")
+                   .attr("width", width2)
+                   .attr("height", height2);
+
         var scaleX2 = d3.scaleLinear()
                       .domain([1915,2015])
-                      .range([65, width2-30]);
+                      .range([90, width2-30]);
 
         var scaleY2 = d3.scaleLinear()
                       .domain([0,2200])
@@ -154,10 +165,35 @@
 
         var left2 = d3.axisLeft(scaleY2);
 
+        svg2.append("text")
+        .attr("x", (width2/2)+30)
+        .attr("y", 15)
+        .style("text-anchor", "middle")
+        .style("alignment-baseline", "middle")
+        .style("font-size", "18px")
+        .text("Number of New Names in the Database Over the Past 100 Years");
+
+        svg2.append("text")
+        .attr("x", (65+width2-30)/2)
+        .attr("y", height2-15)
+        .style("text-anchor", "middle")
+        .style("alignment-baseline", "middle")
+        .style("font-size", "18px")
+        .text("Year");
+
+        svg2.append("text")
+        .attr("transform","rotate(-90)")
+        .attr('x', -1*((height2-70+30)/2))
+        .attr('y', 20)
+        .style("text-anchor","middle")
+        .style("alignment-baseline", "middle")
+        .style("font-size", "18px")
+        .text('Biblical Names');
+
         svg2.append("g")
         .attr("id", "lft2")
         .call(left2)
-        .attr("transform", "translate(50, 0)");
+        .attr("transform", "translate(75, 0)");
 
         svg2.append("g")
         .attr("id", "btm2")
@@ -169,6 +205,7 @@
         .attr("dy", "-4.5")
         .attr("transform", "rotate(-90)");
 
+        //Drawing the data
         for (var i=0; i < counts.length; i++) {
             var x = scaleX2(i+1915)-2;
             var y = scaleY2(counts[i]);
@@ -182,46 +219,47 @@
         }
     }
 
-    function drawLegend() {
+
+    //Used to the draw the axes, title, and legend for the bubble chart
+    function drawBubbleLegend() {
         var circleSizes = [0.0001, 0.0002, 0.0005, 0.0010,  0.002,
                            0.0030, 0.0040,  0.0050];
-        var y = 930;
-
-
-       svg.append("text")
-          .attr("dx", scaleX(1933))
-          .attr("dy", y)
-          .style("text-anchor", "middle")
-          .style("alignment-baseline", "middle")
-          .style("font-size", "18px")
-          .text("Small Circle:");
+        var y = 940;
 
         svg.append("text")
-          .attr("dx", scaleX(1933))
-          .attr("dy", y+17)
-          .style("text-anchor", "middle")
-          .style("alignment-baseline", "middle")
-          .style("font-size", "18px")
-          .text("Percent Scale:");
+        .attr("x", scaleX(1933))
+        .attr("y", y)
+        .style("text-anchor", "middle")
+        .style("alignment-baseline", "middle")
+        .style("font-size", "18px")
+        .text("Small Circle:");
+
+        svg.append("text")
+        .attr("x", scaleX(1933))
+        .attr("y", y+17)
+        .style("text-anchor", "middle")
+        .style("alignment-baseline", "middle")
+        .style("font-size", "18px")
+        .text("Percent Scale:");
 
         svg.append("rect")
-          .attr("x", scaleX(1929))
-          .attr("y", y-25)
-          .attr("width", scaleX(1991) - scaleX(1928))
-          .attr("height", "65")
-          .style("stroke", "black")
-          .style("fill", "none");
+        .attr("x", scaleX(1929))
+        .attr("y", y-25)
+        .attr("width", scaleX(1991) - scaleX(1928))
+        .attr("height", "65")
+        .style("stroke", "black")
+        .style("fill", "none");
 
 
         var legend = svg.append("g")
-                        .selectAll("g")
-                        .data(circleSizes)
-                        .enter()
-                            .append("g")
-                            .attr("transform", function(d,i){
-                                var x = (i * 100)+scaleX(1940);
-                                return "translate(" + x + ", " + y + ")";
-                            });
+                     .selectAll("g")
+                     .data(circleSizes)
+                     .enter()
+                        .append("g")
+                        .attr("transform", function(d,i){
+                            var x = (i * 100)+scaleX(1940);
+                            return "translate(" + x + ", " + y + ")";
+                        });
 
         legend.append("circle")
         .style("fill", "rgb(102,0,51)")
@@ -241,6 +279,153 @@
         });
     }
 
+    //Used to draw the title and axes for the bubble chart
+    function drawBibTitles() {
+        svg.append("text")
+        .attr("x", width/2)
+        .attr("y", 20)
+        .style("text-anchor", "middle")
+        .style("alignment-baseline", "middle")
+        .style("font-size", "18px")
+        .text("Percentages of Male Babies Given Biblical Names over the Past 100 Years");
+
+        svg.append("text")
+        .attr("x", (100+width-30)/2)
+        .attr("y", 885)
+        .style("text-anchor", "middle")
+        .style("alignment-baseline", "middle")
+        .style("font-size", "18px")
+        .text("Year");
+
+        svg.append("text")
+        .attr("transform","rotate(-90)")
+        .attr('x', -1*((height-55+45)/2))
+        .attr('y', 30)
+        .style("text-anchor","middle")
+        .style("alignment-baseline", "middle")
+        .style("font-size", "18px")
+        .text('Biblical Names');
+    }
+
+    //Draws the popular names line graph
+    function drawLineGraph(total) {
+        var line = d3.line()
+                   .x(function(d,i) {
+                       return xScale(i+1913);
+                   })
+                   .y(function(d, i) {
+                       return yScale(d/total[i]);
+                   });
+
+        var textline = d3.line()
+                       .x(function(d) {
+                            return xScale(d[0]);
+                        })
+                        .y(function(d,i) {
+                            return yScale(d[1]);
+                        });
+
+        popculturenames.forEach(function(j) {
+            psvg.append("path")
+            .attr("d", line(datesandcounts[j]))
+            .attr("stroke", namecolors[j])
+            .attr("stroke-width", 2)
+            .attr("fill", "none");
+
+        });
+
+        psvg.append('text')
+        .text('Impact of Pop-Culture on Baby Girl Names')
+        .style("text-anchor","middle")
+        .attr('x', 500)
+        .attr('y', 20);
+
+        psvg.append('text')
+        .text('Year')
+        .style("text-anchor","middle")
+        .attr('x', 500)
+        .attr('y', 775);
+
+        psvg.append('text')
+        .attr("transform","rotate(-90)")
+        .attr('x', -350)
+        .attr('y', 25)
+        .style("text-anchor","middle")
+        .text('Percentage of girls named over total births in the year');
+
+        psvg.selectAll("texts")
+        .data(cities)
+        .enter()
+            .append("text")
+            .text(function(d) {  return d.blurb; })
+            .attr("font-size", "12px")
+            .attr('x', function(d) {
+                return xScale(d.x-10);
+            })
+            .attr('y', function(d) {
+            if (d.x != 2002.5) {
+                    return yScale(d.y+.0285);
+                }
+                return yScale(d.y+0.03);
+            });
+
+        psvg.selectAll("paths")
+        .data(cities)
+        .enter()
+            .append("line")
+            .attr("x1", function (d) {
+                return xScale(d.x);
+            })
+            .attr("y1", function (d) {
+                return yScale(d.y);
+            })
+            .attr("x2", function (d) {
+                return xScale(d.x);
+            })
+            .attr("y2", function (d) {
+                if (d.x != 2002.5) {
+                    return yScale(d.y+.027);
+                }
+                return yScale(d.y+0.0283);
+            })
+            .style("stroke-width",0.5)
+            .style("stroke", "black")
+            .style("opacity", 0.8);
+
+
+        var legend = psvg.selectAll('.legend')
+                    .data(Object.keys(namecolors))
+                    .enter()
+                        .append('g')
+                        .attr('class', 'legend')
+                        .attr('transform', function(d, i) {
+                            var wheight = legendRectSize + legendSpacing;
+                            var offset =  wheight * Object.keys(namecolors).length / 2;
+                            var horz = 50 * legendRectSize;
+                            var vert = 100+(i *wheight - offset);
+                            return 'translate(' + horz + ',' + vert + ')';
+                        });
+
+        legend.append('rect')
+        .attr('width', legendRectSize)
+        .attr('height', legendRectSize)
+        .style('fill', function (d) {
+            return namecolors[d];
+        })
+        .style('stroke', function (d) {
+            return namecolors[d];
+        });
+
+        legend.append('text')
+        .attr('x', legendRectSize + legendSpacing)
+        .attr('y', legendRectSize - legendSpacing)
+        .text(function (d) {
+            return d;
+        });
+    }
+
+    /* Processes the raw data from the .csv files for the national yearly data
+    and handles the construction of the bubble and line graphs */
     function processData(error, datas) {
         var bibColors = {};
         for (var i=0; i < bibNames.length; i++) {
@@ -278,6 +463,7 @@
             yeartotal=0;
             bibData.push(yearData);
 
+            //Averages the bibical names data over 5 year intervals
             if (year % 5 == 2 || year == 2015) {
                 var count = yearData.count;
                 var nameCounts = {};
@@ -318,132 +504,220 @@
                         .text(percent + "%");
                     }
                 }
-                var line = d3.line()
-					.x(function(d,i) {
-						return xScale(i+1913);
-					})
-					.y(function(d, i) {
-						return yScale(d/total[i]);
-					});
-				var textline = d3.line()
-					.x(function(d) {
-						return xScale(d[0]);
-					})
-					.y(function(d,i) {
-						return yScale(d[1]);
-					});
-
-                popculturenames.forEach(function(j) {
-                	psvg.append("path")
-                	.attr("d", line(datesandcounts[j]))
-                	.attr("stroke", namecolors[j])
-                    .attr("stroke-width", 2)
-                	/*.attr("stroke", function(d, i){
-			        	namecolors[i];
-			    	})*/
-			    	.attr("fill", "none");
-
-                });
-                psvg.append('text')
-                    .text('Impact of Pop-Culture on Baby Girl Names')
-                    .style("text-anchor","middle")
-                    .attr('x', 500)
-                    .attr('y', 20);
-
-                psvg.append('text')
-                    .text('Year')
-                    .style("text-anchor","middle")
-                    .attr('x', 500)
-                    .attr('y', 775);
-
-                psvg.append('text')
-                    .attr("transform","rotate(-90)")
-                    .attr('x', -350)
-                    .attr('y', 25)
-                    .style("text-anchor","middle")
-                    .text('Percentage of girls named over total births in the year');
-
-                psvg.selectAll("texts")
-                	.data(cities)
-                	.enter()
-                	.append("text")
-                	.text(function(d) {  return d.blurb; })
-                	.attr("font-size", "12px")
-                	.attr('x', function(d) { 
-                		return xScale(d.x-10);
-                	})
-		    		.attr('y', function(d) {
-                        if (d.x != 2002.5) {
-                		  return yScale(d.y+.0285);
-                        } return yScale(d.y+0.03);
-                	});
-
-               	psvg.selectAll("paths")
-               		.data(cities)
-					.enter()
-					.append("line")
-					.attr("x1", function (d) {
-						return xScale(d.x);
-					})
-					.attr("y1", function (d) {
-						return yScale(d.y);
-					})
-					.attr("x2", function (d) {
-						return xScale(d.x);
-					})
-					.attr("y2", function (d) {
-						if (d.x != 2002.5) {
-                          return yScale(d.y+.027);
-                        } return yScale(d.y+0.0283);
-					})
-					.style("stroke-width",0.5)
-					.style("stroke", "black")
-                    .style("opacity", 0.8);
-
-
-				var legend = psvg.selectAll('.legend')
-          		  .data(Object.keys(namecolors))
-		          .enter()
-		          .append('g')
-		          .attr('class', 'legend')
-		          .attr('transform', function(d, i) {
-		            var wheight = legendRectSize + legendSpacing;
-		            var offset =  wheight * Object.keys(namecolors).length / 2;
-		            var horz = 50 * legendRectSize;
-		            var vert = 100+(i *wheight - offset);
-		            return 'translate(' + horz + ',' + vert + ')';
-		          });
-
-			    legend.append('rect')
-			          .attr('width', legendRectSize)
-			          .attr('height', legendRectSize)
-			          .style('fill', function (d) {
-			          	return namecolors[d];
-			          })
-			          .style('stroke', function (d) {
-			          	return namecolors[d];
-			          });
-
-			    legend.append('text')
-			          .attr('x', legendRectSize + legendSpacing)
-			          .attr('y', legendRectSize - legendSpacing)
-			          .text(function (d) {
-			          	return d;
-			          });
             }
         }
-        drawLegend();
+        drawLineGraph(total);
+        drawBubbleLegend();
+        drawBibTitles();
         drawOriginalNames(datas);
     };
 
-    var filenames = [];
+    //Parsing the national baby name data files in a queue with d3
+    var datafiles = [];
     for (var i = 1913; i < 2016; i++) {
-        filenames.push("data/names/yob" + i + ".csv");
+        datafiles.push("data/names/yob" + i + ".csv");
     }
 
     var queue = d3.queue();
-    filenames.forEach(function(filename) {
+    datafiles.forEach(function(filename) {
         queue.defer(d3.csv, filename);
     });
     queue.awaitAll(processData);
+
+
+    //Defining svg elements for the maps
+    var mheight = 425;
+    var mwidth = 600;
+
+    var projection = d3.geoAlbersUsa().scale(75);
+
+    var map;
+    var abbrs = {};
+    var states;
+    var dts;
+
+    //Defining constants for the maps
+    var mapTitles = ["Most Popular Baby Girl Name by State, 1915",
+                    "Most Popular Baby Boy Name by State, 1915",
+                    "Most Popular Baby Girl Name by State, 2015",
+                    "Most Popular Baby Boy Name by State, 2015"];
+
+    //Needed for small state labels
+    var lines = {"9" : {"state":"CT", "dx":60, "dy":53, "textdx":27.5, "textdy":0},
+                "10" : {"state":"DE", "dx":77, "dy":68, "textdx":27.5, "textdy":0},
+                "11" : {"state":"DC", "dx":50, "dy":110, "textdx":0, "textdy":10},
+                "24" : {"state":"MD", "dx":103, "dy":100, "textdx":10, "textdy":8},
+                "25" : {"state":"MA", "dx":53, "dy":-3, "textdx":40, "textdy":0},
+                "33" : {"state":"NH", "dx":65, "dy":-10, "textdx":28, "textdy":0},
+                "34" : {"state":"NJ", "dx":75, "dy":60, "textdx":27, "textdy":0},
+                "44" : {"state":"RI", "dx":60, "dy":30, "textdx":30, "textdy":0},
+                "50" : {"state":"VT", "dx":-35, "dy":-30, "textdx":0, "textdy":-8}};
+
+
+    //Parsing the us.json file from lecture and state id's datasets
+    d3.queue()
+    .defer(d3.json, "data/us.json")
+    .defer(d3.csv, "data/statesAbbr.csv")
+    .awaitAll( function (error, data) {
+        map = data[0];
+        data[1].forEach( function (state) {
+            abbrs[state.abbr] = state.id;
+        });
+        states = topojson.feature(map, map.objects.states);
+        d3.queue()
+        .defer(d3.csv, "data/statenames/state1915NamesF.csv")
+        .defer(d3.csv, "data/statenames/state1915NamesM.csv")
+        .defer(d3.csv, "data/statenames/state2015NamesF.csv")
+        .defer(d3.csv, "data/statenames/state2015NamesM.csv")
+        .awaitAll(showMaps);
+    });
+
+    //Used to draw each of the maps
+    function showMaps(error, datas) {
+        for (var i = 0; i < datas.length; i++) {
+            var svgMaps = d3.select("#map" + i)
+                          .append("svg")
+                          .attr("width", mwidth)
+                          .attr("height", mheight);
+
+            svgMaps.append("text")
+            .attr("x", mwidth/2)
+            .attr("y", 25)
+            .style("text-anchor", "middle")
+            .style("alignment-baseline", "middle")
+            .style("font-size", "18px")
+            .text(mapTitles[i]);
+
+            var nameList = [];
+            var stateNames = {}
+            datas[i].forEach( function(s) {
+                if (!(nameList.includes(s.name))) {
+                    nameList.push(s.name);
+                }
+                stateNames[abbrs[s.state]] = s.name;
+            });
+            projection.fitExtent([[0,-25], [mwidth-100, mheight+50]], states);
+            pathGenerator = d3.geoPath().projection(projection);
+
+            var pathGroup = svgMaps.append("g");
+            var paths = pathGroup.selectAll("path.state").data(states.features);
+
+            paths.enter().append("path")
+            .attr("class", "state")
+            .merge(paths)
+            .style("fill", function (state) {
+                var name = stateNames[state.id];
+                var ind = nameList.indexOf(name);
+                return colors[ind];
+            })
+            .style("stroke", "black")
+            .attr("d", function (state) {
+                return pathGenerator(state);
+            });
+
+            //Adding the names for each state in the map
+            pathGroup.append("g")
+            .attr("class", "names")
+            .selectAll("text")
+            .data(states.features)
+                .enter()
+                .append("text")
+                .text(function (state) {
+                    if (lines.hasOwnProperty(state.id)) {
+                        return lines[state.id].state + ": "+stateNames[state.id];
+                    }
+                    else {
+                        return stateNames[state.id];
+                    }
+                })
+                .attr("id", function (state) {
+                    return "text"+state.id+(i.toString());
+                })
+                .attr("x", function (state) {
+                    var x = pathGenerator.centroid(state)[0];
+                    if (lines.hasOwnProperty(state.id)) {
+                        var shift = lines[state.id].dx + lines[state.id].textdx;
+                        return (x+shift);
+                    }
+                    else if (isNaN(x)) {
+                        return 0;
+                    }
+                    else {
+                        return x;
+                    }
+                })
+                .attr("y", function (state) {
+                    var y = pathGenerator.centroid(state)[1];
+                    if (lines.hasOwnProperty(state.id)) {
+                        var shift = lines[state.id].dy + lines[state.id].textdy
+                        return (y+shift);
+                    }
+                    else if (isNaN(y)) {
+                        return 0;
+                    }
+                    else {
+                        return y;
+                    }
+                })
+                .attr("dx", function (state) {
+                    if (state.id == 26) {
+                        return 10;
+                    }
+                    else if (state.id == 12){
+                        return 16;
+                    }
+                    else if (state.id == 17) {
+                        return -3;
+                    }
+                    else if (state.id == 13 || state.id == 18) {
+                        return 3
+                    }
+                    else {
+                        return 0;
+                    }
+                })
+                .attr("dy", function (state) {
+                    if ([6,13,16,36,51,22,12].includes(state.id)) {
+                        return 5;
+                    }
+                    else if (state.id == 26) {
+                        return 17;
+                    }
+                    else if (state.id == 15) {
+                        return 27.5;
+                    }
+                    else if (state.id == 1) {
+                        return -5;
+                    }
+                    else if (state.id == 17 || state.id == 21) {
+                        return 3.5
+                    }
+                    else {
+                        return 0;
+                    }
+                })
+                .attr("text-anchor", "middle")
+                .style("alignment-baseline", "middle")
+                .attr("font-size", "12px")
+                .attr("fill", "rgb(53,178,175)")
+
+            //Adding connecting lines for offset names in the map
+            var lineNames = svgMaps.append("g");
+            for (var id in lines) {
+                var txt = d3.select("#text" + id + (i.toString()));
+                var x1 = parseInt(txt.attr("x")) - lines[id].textdx;
+                var y1 = parseInt(txt.attr("y")) - lines[id].textdy;
+                var x2 = x1 - lines[id].dx;
+                var y2 = y1 - lines[id].dy;
+
+                lineNames.append("line")
+                .style("stroke", "black")
+                .style("stroke-width", "1.5px")
+                .attr("x1", x1)
+                .attr("y1", y1)
+                .attr("x2", x2)
+                .attr("y2", y2);
+            }
+        }
+    }
 </script>

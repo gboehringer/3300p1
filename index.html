@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Project 1: Junie Khang jk2235, Arun Pidugu ap639, Gillian Boehringer ggb39</title>
+    <title>Project 1: Junie Khang (jk2235), Arun Pidugu (ap639), Gillian Boehringer (ggb39)</title>
     <link href="https://fonts.googleapis.com/css?family=Alegreya|Alegreya+Sans" rel="stylesheet">
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="http://d3js.org/topojson.v2.min.js"></script>
@@ -10,7 +10,7 @@
 
 <body>
     <h1 id="title">U.S. Name Trends</h1>
-    <p id="names">By: jk2235, ap639, and ggb39</p>
+    <p id="names">By: Junie Khang, Arun Pidugu, and Gillian Boehringer</p>
     <div id="newNames"></div>
     <p id= "newNamMap"> Over time there has been a drastic increase of new baby names in the top 1000 for the U.S. Parents are now
     looking for more unique names for their children.</p>
@@ -632,7 +632,10 @@
                 return pathGenerator(state);
             });
 
-            //Adding the names for each state in the map
+            /* The idea of using the path centroids to find the (x,y) coordinates for the text came from:
+             * http://stackoverflow.com/questions/13897534/add-names-of-the-states-to-a-map-in-d3-js
+             */
+             // Adding the names for each state in the map
             pathGroup.append("g")
             .attr("class", "names")
             .selectAll("text")

@@ -26,7 +26,7 @@
     <div id="bibleNames"></div>
 </body>
 
-<script id="Male Bible Names">
+<script id="project code">
     /* Defining Colors used in bubble and map charts
      */
     var colors = ["rgb(101,82,114)", "rgb(72,102,88)", "rgb(73,90,108)", "rgb(83,98,99)",
@@ -73,7 +73,8 @@
         .call(bottom)
         .attr("transform", "translate(0, 845)");
 
-    //Defining & creating svg elements and axes for the line graph
+    /* Defining & creating svg elements and axes for the line graph
+     */
     var pwidth = 1000;
 	var pheight = 800;
 	var padding = 40;
@@ -97,7 +98,8 @@
 	   .call(yAxis)
 	 .attr("transform", "translate(" + (padding + padding) + ",0)");
 
-    //Pop culture graph constants
+    /* Pop culture graph constants
+     */
 	var popculturenames = ["Mariah", "Emma", "Jennifer", "Rachel", "Linda"];
 	var namecolors = {"Mariah":"rgb(101,82,134)", "Emma":"rgb(173,173,92)",
     "Jennifer":"rgb(77,153,153)", "Rachel":"rgb(102,153,0)", "Linda":"rgb(123,18,99)"};
@@ -122,7 +124,9 @@
 	var legendsize = 18;
 	var legendspace = 4;
 
-    //Draws the new-name chart
+    /* Responsible for creating and drawing the svg element displaying
+     * the new name bar chart
+     */
     function drawOriginalNames(datas) {
 
         var names = new Set();
@@ -141,7 +145,8 @@
             counts.push(count);
         }
 
-        //Defining the svg elements for the new name chart
+        /* Defining the svg elements for the new name chart
+         */
         var width2 = 625;
         var height2 = 500;
 
@@ -219,7 +224,8 @@
     }
 
 
-    //Used to the draw the axes, title, and legend for the bubble chart
+    /* Responsible for drawing the axes, title, and legend for the bubble chart
+     */
     function drawBubbleLegend() {
         var circleSizes = [0.0001, 0.0002, 0.0005, 0.0010,  0.002,
                            0.0030, 0.0040,  0.0050];
@@ -258,7 +264,8 @@
                      .enter()
                         .append("g")
                         .attr("transform", function(d,i){
-                            return "translate(" + (i * 100)+scaleX(1940) + ", " + y + ")";
+                            var x = (i * 100)+scaleX(1940);
+                            return "translate(" + x + ", " + y + ")";
                         });
 
         legend.append("circle")
@@ -279,7 +286,8 @@
         });
     }
 
-    //Used to draw the title and axes for the bubble chart
+    /* Responsible for drawing the title and axes for the bubble chart
+     */
     function drawBibTitles() {
         svg.append("text")
         .attr("x", width/2)
@@ -307,7 +315,8 @@
         .text('Biblical Names');
     }
 
-    //Draws the popular names line graph
+    /* Responsible for drawing the popular names line graph
+     */
     function drawLineGraph(total) {
         var line = d3.line()
                    .x(function(d,i) {
@@ -392,7 +401,9 @@
             .style("stroke", "black")
             .style("opacity", 0.8);
 
-        //adds a legend for corresponding names/colors; credit to http://zeroviscosity.com/d3-js-step-by-step/step-3-adding-a-legend
+        /* adds a legend for corresponding names/colors; credit to:
+         * http://zeroviscosity.com/d3-js-step-by-step/step-3-adding-a-legend
+         */
         var legend = psvg.selectAll('.legend')
                     .data(Object.keys(namecolors))
                     .enter()
@@ -425,7 +436,8 @@
     }
 
     /* Processes the raw data from the .csv files for the national yearly data
-    and handles the construction of the bubble and line graphs */
+     * and handles the construction of the bubble and line graphs
+     */
     function processData(error, datas) {
         var bibColors = {};
         for (var i=0; i < bibNames.length; i++) {
@@ -512,7 +524,8 @@
         drawOriginalNames(datas);
     };
 
-    //Parsing the national baby name data files in a queue with d3
+    /* Parsing the national baby name data files in a queue with d3
+     */
     var datafiles = [];
     for (var i = 1913; i < 2016; i++) {
         datafiles.push("data/names/yob" + i + ".csv");
@@ -525,7 +538,8 @@
     queue.awaitAll(processData);
 
 
-    //Defining svg elements for the maps
+    /* Defining svg elements for the maps
+     */
     var mheight = 425;
     var mwidth = 600;
 
@@ -536,7 +550,8 @@
     var states;
     var dts;
 
-    //Defining constants for the maps
+    /* Defining constants for the maps
+     */
     var mapTitles = ["Most Popular Baby Girl Name by State, 1915",
                     "Most Popular Baby Boy Name by State, 1915",
                     "Most Popular Baby Girl Name by State, 2015",
@@ -554,10 +569,11 @@
                 "50" : {"state":"VT", "dx":-35, "dy":-30, "textdx":0, "textdy":-8}};
 
 
-    //Parsing the us.json file from lecture and state id's datasets
+    /* Parsing the us.json file from lecture and state id's datasets
+     */
     d3.queue()
-    .defer(d3.json, "data/us.json")
-    .defer(d3.csv, "data/statesAbbr.csv")
+    .defer(d3.json, "data/mapdata/us.json")
+    .defer(d3.csv, "data/mapdata/statesAbbr.csv")
     .awaitAll( function (error, data) {
         map = data[0];
         data[1].forEach( function (state) {
@@ -572,7 +588,8 @@
         .awaitAll(showMaps);
     });
 
-    //Used to draw each of the maps
+    /* Responsible for drawing each of the state-level name maps
+     */
     function showMaps(error, datas) {
         for (var i = 0; i < datas.length; i++) {
             var svgMaps = d3.select("#map" + i)

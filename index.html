@@ -117,8 +117,8 @@
 	popculturenames.forEach(function(o) {
 		datesandcounts[o] = [];
 	});
-	var legendRectSize = 18;
-	var legendSpacing = 4;
+	var legendsize = 18;
+	var legendspace = 4;
 
     //Draws the new-name chart
     function drawOriginalNames(datas) {
@@ -396,16 +396,16 @@
                         .append('g')
                         .attr('class', 'legend')
                         .attr('transform', function(d, i) {
-                            var wheight = legendRectSize + legendSpacing;
+                            var wheight = legendsize + legendspace;
                             var offset =  wheight * Object.keys(namecolors).length / 2;
-                            var horz = 50 * legendRectSize;
-                            var vert = 100+(i *wheight - offset);
-                            return 'translate(' + horz + ',' + vert + ')';
+                            var translate_horizontal = 50 * legendsize;
+                            var translate_vertical = 100+(i *wheight - offset);
+                            return 'translate(' + translate_horizontal + ',' + translate_vertical + ')';
                         });
 
         legend.append('rect')
-        .attr('width', legendRectSize)
-        .attr('height', legendRectSize)
+        .attr('width', legendsize)
+        .attr('height', legendsize)
         .style('fill', function (d) {
             return namecolors[d];
         })
@@ -414,8 +414,8 @@
         });
 
         legend.append('text')
-        .attr('x', legendRectSize + legendSpacing)
-        .attr('y', legendRectSize - legendSpacing)
+        .attr('x', legendsize + legendspace)
+        .attr('y', legendsize - legendspace)
         .text(function (d) {
             return d;
         });

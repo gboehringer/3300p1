@@ -13,21 +13,31 @@ h1 {
 	font-size: 2em;
 	color: #3d2356;
 }
-#newN{
+#newNamMap{
 	text-align: center;
-	font-size: 1em;
+	font-size: 2em;
 	color: #3d2356;
+    padding: 3em;
 }
 #newNames{
 	text-align: center;
+}
+#popComment{
+    display: block;
+    text-align: center;
+    font-size: 2em;
+    color: #3d2356;
+    padding: 3em;
+    float: left;
 }
 #popculture{
 	text-align: center;
 }
 #bib{
 	text-align: center;
-	font-size: 1em;
+	font-size: 2em;
 	color: #3d2356;
+    padding: 3em;
 }
 #bibleNames{
 	display: block;

@@ -27,11 +27,13 @@
 </body>
 
 <script id="Male Bible Names">
-    //Defining Colors used in bubble and map charts
+    /* Defining Colors used in bubble and map charts
+     */
     var colors = ["rgb(101,82,114)", "rgb(72,102,88)", "rgb(73,90,108)", "rgb(83,98,99)",
     "rgb(83,107,89)", "rgb(109,43,61)", "rgb(60,54,80)", "rgb(69,73,95)", "rgb(46,80,46)"]
 
-    //Defining & creating svg elements and axes for the bubble chart
+    /* Defining & creating svg elements and axes for the bubble chart
+     */
     var width = 1600;
     var height = 900;
 
@@ -247,15 +249,16 @@
         .style("stroke", "black")
         .style("fill", "none");
 
-
+        /* This code was based on an example from:
+         * http://www.competa.com/blog/d3-js-part-7-of-9-adding-a-legend-to-explain-the-data/
+         */
         var legend = svg.append("g")
                      .selectAll("g")
                      .data(circleSizes)
                      .enter()
                         .append("g")
                         .attr("transform", function(d,i){
-                            var x = (i * 100)+scaleX(1940);
-                            return "translate(" + x + ", " + y + ")";
+                            return "translate(" + (i * 100)+scaleX(1940) + ", " + y + ")";
                         });
 
         legend.append("circle")
